@@ -103,11 +103,11 @@ do
   STUDENT_USERNAME=$(echo "$COURSE_NAME-$STUDENT_ID")
     
   # Create user without password
-  #adduser $STUDENT_USERNAME --gecos "$STUDENT_USERNAME, RoomNumber, WorkPhone, HomePhone" --disabled-password
+  adduser $STUDENT_USERNAME --gecos "$STUDENT_USERNAME, RoomNumber, WorkPhone, HomePhone" --disabled-password
   
   # Generate random password
   RAND_PASSWD=$(shuf -i 10000-100000 -n 1)
-  #echo "$STUDENT_USERNAME:$RAND_PASSWD" | chpasswd
+  echo "$STUDENT_USERNAME:$RAND_PASSWD" | chpasswd
   echo "$STUDENT_USERNAME: $RAND_PASSWD"
   
   # Restric user to their own home dir only
