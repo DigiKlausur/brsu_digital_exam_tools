@@ -33,7 +33,7 @@ This directory contains codes for generating bulk Linux users, jupyterhub login 
 | Test User 2 | test22s | wus-test22s | 63945    | 012345   | C175 | 2     | 22.03.2019 |
 | Test User 3 | test32s | wus-test32s | 57806    | 012345   | C175 | 3     | 22.03.2019 |
 
-* Add generated users to jupyterhub config
+* Add generated users to whitelist of the jupyterhub config
 
 ![jupyterhub config whitelist](https://github.com/DigiKlausur/brsu_digital_exam_tools/blob/master/create_multiple_users/figures/jupyterhub_config_sample.png)
 
