@@ -47,6 +47,7 @@ This directory contains codes for generating bulk Linux users, jupyterhub login 
   ```
 * Student id card generation
   * Once we have the list of users with their password and verified the user login on the jupyterhub server, we can generate a pdf file containing their login access. This will be the id of the student and will be handed to students by the Prüfung Aufsicht or invigilator.
+  * The student id card also contains the hashcode which will be written by the student once they submitted their work and the timestamp
   * Arguments:
     * csv_file: a csv file containing a list of students' information
     * pdf_file: the path to the generated pdf file
