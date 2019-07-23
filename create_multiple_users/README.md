@@ -34,14 +34,16 @@ This directory contains codes for generating bulk Linux users, jupyterhub login 
 | Test User 3 | test32s | wus-test32s | 57806    | 012345   | C175 | 3     | 22.03.2019 |
 
 * Add generated users to jupyterhub config
-  ![jupyterhub config whitelist](https://github.com/DigiKlausur/brsu_digital_exam_tools/tree/master/create_multiple_users/figures/jupyterhub_config_sample.png)
+
+![jupyterhub config whitelist](https://github.com/DigiKlausur/brsu_digital_exam_tools/tree/master/create_multiple_users/figures/jupyterhub_config_sample.png)
+
 * Students login verification
   * Once the student username has been added to jupyterhub config, we need to verify them. Run the following code to verify them automatically once the jupyterhub is running.
   * Arguments:
     * server: the jupyterhub server e.g. http://localhost:7777
     * user_list: the list of users generated from automatic user creation 
   ```
-  pyrhon check_login --server=http://localhost:7777 --user_list=samples/exam_complete_list_output.csv
+  python check_login --server=http://localhost:7777 --user_list=samples/exam_complete_list_output.csv
   ```
 * Student id card generation
   * Once we have the list of users with their password and verified the user login on the jupyterhub server, we can generate a pdf file containing their login access. This will be the id of the student and will be handed to students by the Prüfung Aufsicht or invigilator.
@@ -52,7 +54,9 @@ This directory contains codes for generating bulk Linux users, jupyterhub login 
   python convert_student_list_to_pdf.py --csv_file=samples/exam_complete_list_output.csv --pdf_file=samples/exam_complete_list_output.pdf
   ```
   * The sample of the generated student id cards
-  ![test02s_user_id](https://github.com/DigiKlausur/brsu_digital_exam_tools/tree/master/create_multiple_users/figures/test02s_user_id.png)
+
+![test02s_user_id](https://github.com/DigiKlausur/brsu_digital_exam_tools/tree/master/create_multiple_users/figures/test02s_user_id.png)
+
 * Removing bulk user
   * Create a dellist containing usernames to delete
   * run remove_bulk_users.bash with sudo
