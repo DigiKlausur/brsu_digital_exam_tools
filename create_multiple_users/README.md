@@ -8,12 +8,12 @@ This directory contains codes for generating bulk Linux users, jupyterhub login 
     * Platz
     * Date
   Note: this list should not contain a header
-  |-------------	|---------	|--------	|------	|---	|------------	|
-  | Test User 0 	| test02s 	| 012345 	| C175 	| 0 	| 22.03.2019 	|
-  | Test User 1 	| test12s 	| 012345 	| C175 	| 1 	| 22.03.2019 	|
-  | Test User 2 	| test22s 	| 012345 	| C175 	| 2 	| 22.03.2019 	|
-  | Test User 3 	| test32s 	| 012345 	| C175 	| 3 	| 22.03.2019 	|
-  |-------------	|---------	|--------	|------	|---	|------------	|
+| Test User 0 | test02s | 012345 | C175 | 0 | 22.03.2019 |
+|-------------|---------|--------|------|---|------------|
+| Test User 1 | test12s | 012345 | C175 | 1 | 22.03.2019 |
+| Test User 2 | test22s | 012345 | C175 | 2 | 22.03.2019 |
+| Test User 3 | test32s | 012345 | C175 | 3 | 22.03.2019 |
+
 * Linux user generation
   * Arguments required
     * course_name : the abbreviation of the course name e.g. nn for a neural network course. This username prefix helps us to differentiate between courses.
@@ -24,13 +24,13 @@ This directory contains codes for generating bulk Linux users, jupyterhub login 
     sudo bash create_bulk_users.sh -course_name wus -input_list samples/exam_complete_list.csv -output_list samples/exam_complete_list_output.csv
     ```
   * Example of the generated list
-    | Name        	| FB02UID 	| Username    	| Password 	| Matrikel 	| Raum 	| Platz 	| Date       	|
-    |-------------	|---------	|-------------	|----------	|----------	|------	|-------	|------------	|
-    | Test User 0 	| test02s 	| wus-test02s 	| 84392    	| 012345   	| C175 	| 0     	| 22.03.2019 	|
-    | Test User 1 	| test12s 	| wus-test12s 	| 22261    	| 012345   	| C175 	| 1     	| 22.03.2019 	|
-    | Test User 2 	| test22s 	| wus-test22s 	| 63945    	| 012345   	| C175 	| 2     	| 22.03.2019 	|
-    | Test User 3 	| test32s 	| wus-test32s 	| 57806    	| 012345   	| C175 	| 3     	| 22.03.2019 	|
-    |-------------	|---------	|-------------	|----------	|----------	|------	|-------	|------------	|
+| Name        | FB02UID | Username    | Password | Matrikel | Raum | Platz | Date       |
+|-------------|---------|-------------|----------|----------|------|-------|------------|
+| Test User 0 | test02s | wus-test02s | 84392    | 012345   | C175 | 0     | 22.03.2019 |
+| Test User 1 | test12s | wus-test12s | 22261    | 012345   | C175 | 1     | 22.03.2019 |
+| Test User 2 | test22s | wus-test22s | 63945    | 012345   | C175 | 2     | 22.03.2019 |
+| Test User 3 | test32s | wus-test32s | 57806    | 012345   | C175 | 3     | 22.03.2019 |
+
 * Add generated users to jupyterhub config
   ![jupyterhub config whitelist](https://github.com/DigiKlausur/brsu_digital_exam_tools/tree/master/create_multiple_users/figures/jupyterhub_config_sample.png)
 * Students login verification
