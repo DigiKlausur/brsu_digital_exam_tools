@@ -8,6 +8,7 @@ This directory contains codes for generating bulk Linux users, jupyterhub login 
     * Platz
     * Date
   Note: this list should not contain a header
+
 | Test User 0 | test02s | 012345 | C175 | 0 | 22.03.2019 |
 |-------------|---------|--------|------|---|------------|
 | Test User 1 | test12s | 012345 | C175 | 1 | 22.03.2019 |
@@ -24,6 +25,7 @@ This directory contains codes for generating bulk Linux users, jupyterhub login 
     sudo bash create_bulk_users.sh -course_name wus -input_list samples/exam_complete_list.csv -output_list samples/exam_complete_list_output.csv
     ```
   * Example of the generated list
+
 | Name        | FB02UID | Username    | Password | Matrikel | Raum | Platz | Date       |
 |-------------|---------|-------------|----------|----------|------|-------|------------|
 | Test User 0 | test02s | wus-test02s | 84392    | 012345   | C175 | 0     | 22.03.2019 |
