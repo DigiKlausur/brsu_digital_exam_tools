@@ -17,7 +17,7 @@ This directory contains codes for generating bulk Linux users, jupyterhub login 
 
 * Linux user generation
   * Arguments required
-    * course_name : the abbreviation of the course name e.g. nn for a neural network course. This username prefix helps us to differentiate between courses.
+    * course_name : the abbreviation of the course name e.g. nn for a neural network course. This username prefix helps us to differentiate among courses.
     * input_list : the list of students registered for the exam and the list should follow the structure as in point one (e.g. exam_complete_list.csv).
     * output_list : the generated list with the username and password for each student (e.g. exam_complete_list_output.csv).
   * Start creating bulk linux users
