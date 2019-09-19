@@ -7,22 +7,24 @@ This directory contains codes for generating bulk Linux users, jupyterhub login 
     * Room number
     * Platz
     * Date <br>
-  Note: this list should not contain any header
+  Note: This list may contain a *single-line* header
 
-| Test User 0 | test02s | 012345 | C175 | 0 | 22.03.2019 |
-|-------------|---------|--------|------|---|------------|
-| Test User 1 | test12s | 012345 | C175 | 1 | 22.03.2019 |
-| Test User 2 | test22s | 012345 | C175 | 2 | 22.03.2019 |
-| Test User 3 | test32s | 012345 | C175 | 3 | 22.03.2019 |
+| Name        | FB02UID | Matrikelnummer | Room | Sitting place |  Exam date |
+|-------------|---------|----------------|------|---------------|------------|
+| Test User 0 | test02s |      012345    | C175 |       0       | 22.03.2019 |
+| Test User 1 | test12s |      123456    | C175 |       1       | 22.03.2019 |
+| Test User 2 | test22s |      234567    | C175 |       2       | 22.03.2019 |
+| Test User 3 | test32s |      345678    | C175 |       3       | 22.03.2019 |
 
 * Linux user generation
   * Arguments required
-    * course_name : the abbreviation of the course name e.g. nn for a neural network course. This username prefix helps us to differentiate among courses.
-    * input_list : the list of students registered for the exam and the list should follow the structure as in point one (e.g. exam_complete_list.csv).
-    * output_list : the generated list with the username and password for each student (e.g. exam_complete_list_output.csv).
+    * course_name: the abbreviation of the course name e.g. nn for a neural network course. This username prefix helps us to differentiate among courses.
+    * input_list: the list of students registered for the exam and the list should follow the structure as in point one (e.g. exam_complete_list.csv).
+    * skip_header (0 or 1): whether the input file contains a header line that should be skipped (default 1)
+    * output_list: the generated list with the username and password for each student (e.g. exam_complete_list_output.csv).
   * Start creating bulk linux users
     ```
-    sudo bash create_bulk_users.sh -course_name wus -input_list samples/exam_complete_list.csv -output_list samples/exam_complete_list_output.csv
+    sudo bash create_bulk_users.sh -course_name wus -input_list samples/exam_complete_list.csv -output_list samples/exam_complete_list_output.csv -skip_header 1
     ```
   * Example of the generated list
 
@@ -41,7 +43,7 @@ This directory contains codes for generating bulk Linux users, jupyterhub login 
   * Once the student username has been added to jupyterhub config, we need to verify them. Run the following code to verify them automatically once the jupyterhub is running.
   * Arguments:
     * server: the jupyterhub server e.g. http://localhost:7777
-    * user_list: the list of users generated from automatic user creation 
+    * user_list: the list of users generated from automatic user creation
   ```
   python check_login --server=http://localhost:7777 --user_list=samples/exam_complete_list_output.csv
   ```
