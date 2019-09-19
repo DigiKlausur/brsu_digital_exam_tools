@@ -45,16 +45,17 @@ This directory contains codes for generating bulk Linux users, jupyterhub login 
   ```
   python check_login --server=http://localhost:7777 --user_list=samples/exam_complete_list_output.csv
   ```
-* Student id card generation
+* Exam sheet generation
   * Once we have the list of users with their password and verified the user login on the jupyterhub server, we can generate a pdf file containing their login access. This will be the id of the student and will be handed to students by the Prüfung Aufsicht or invigilator.
   * The student id card also contains the hashcode which will be written by the student once they submitted their work and the timestamp
   * Arguments:
     * csv_file: a csv file containing a list of students' information
     * pdf_file: the path to the generated pdf file
+    * course name: the name of the course
   ```
-  python convert_student_list_to_pdf.py --csv_file=samples/exam_complete_list_output.csv --pdf_file=samples/exam_complete_list_output.pdf
+  python3 generate_student_exam_sheets.py -i exam_user_utilities/samples/exam_complete_list_output.csv -o exam_user_utilities/samples/exam_complete_list_output.csv -c 'My awesome course' -s 'Sommersemester 2019'
   ```
-  * The sample of the generated student id cards
+  * The sample of the generated exam sheet
 
 ![test02s_user_id](https://github.com/DigiKlausur/brsu_digital_exam_tools/blob/master/exam_user_utilities/figures/exam_sheet_sample.png)
 
