@@ -56,7 +56,7 @@ This directory contains codes for generating bulk Linux users, jupyterhub login 
   ```
   * The sample of the generated student id cards
 
-![test02s_user_id](https://github.com/DigiKlausur/brsu_digital_exam_tools/blob/master/exam_user_utilities/figures/test02s_user_id.png)
+![test02s_user_id](https://github.com/DigiKlausur/brsu_digital_exam_tools/blob/master/exam_user_utilities/figures/exam_sheet_sample.png)
 
 * Removing bulk user
   * Create a dellist containing usernames to delete
