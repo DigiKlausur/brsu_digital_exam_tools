@@ -6,8 +6,8 @@ This directory contains codes for generating bulk Linux users, jupyterhub login 
     * Matrikel nummer
     * Room number
     * Platz
-    * Date
-  Note: this list should not contain a header
+    * Date <br>
+  Note: this list should not contain any header
 
 | Test User 0 | test02s | 012345 | C175 | 0 | 22.03.2019 |
 |-------------|---------|--------|------|---|------------|
@@ -35,7 +35,7 @@ This directory contains codes for generating bulk Linux users, jupyterhub login 
 
 * Add generated users to whitelist of the jupyterhub config
 
-![jupyterhub config whitelist](https://github.com/DigiKlausur/brsu_digital_exam_tools/blob/master/create_multiple_users/figures/jupyterhub_config_sample.png)
+![jupyterhub config whitelist](https://github.com/DigiKlausur/brsu_digital_exam_tools/blob/master/exam_user_utilities/figures/jupyterhub_config_sample.png)
 
 * Students login verification
   * Once the student username has been added to jupyterhub config, we need to verify them. Run the following code to verify them automatically once the jupyterhub is running.
@@ -56,7 +56,7 @@ This directory contains codes for generating bulk Linux users, jupyterhub login 
   ```
   * The sample of the generated student id cards
 
-![test02s_user_id](https://github.com/DigiKlausur/brsu_digital_exam_tools/blob/master/create_multiple_users/figures/test02s_user_id.png)
+![test02s_user_id](https://github.com/DigiKlausur/brsu_digital_exam_tools/blob/master/exam_user_utilities/figures/test02s_user_id.png)
 
 * Removing bulk user
   * Create a dellist containing usernames to delete
