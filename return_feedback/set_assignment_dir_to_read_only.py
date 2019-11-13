@@ -4,8 +4,6 @@ import pwd
 import argparse
 import stat
 
-import argparse
-
 parser = argparse.ArgumentParser()
 parser.add_argument('--assignment_id', default='', help='Assignment id')
 parser.add_argument('--student_id', default='', help='Student id')
@@ -16,23 +14,24 @@ ASSIGNMENT_ID = FLAGS.assignment_id
 STUDENT_ID = FLAGS.student_id
 USERNAME_PREFIX = FLAGS.username_prefix
 
-'''
-    Set permission of a directory to read only
-'''
+
 def set_permissions(path, uid, gid):
+    '''
+    Set permission of a directory to read only
+    '''
     os.chown(path, uid, gid)
     if os.path.isdir(path):
         os.chmod(path, stat.S_IRUSR | stat.S_IRGRP | stat.S_IXUSR | stat.S_IXGRP)
     else:
         os.chmod(path, stat.S_IRUSR | stat.S_IRGRP)
 
-'''
+def main():
+    '''
     Set assignment directory in student home to read only
     Input: assignment_id
            username_prefix
            student_id
-'''
-def main():
+    '''
     if ASSIGNMENT_ID == "":
         print ("Please specify assignment id")
         return
@@ -42,7 +41,7 @@ def main():
         return
     
     if STUDENT_ID == "":
-        print "No student_id specified, will be applied to all students if the feedbacks exist in the course dir"
+        print ("No student_id specified, will be applied to all students if the feedbacks exist in the course dir")
     
     if STUDENT_ID == "":
         users = os.listdir("/home")
