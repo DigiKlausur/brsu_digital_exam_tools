@@ -36,6 +36,18 @@ This directory contains codes for generating bulk Linux users, jupyterhub login 
 | Test User 3 | test32s | wus-test32s | 57806    | 012345   | C175 | 3     | 22.03.2019 |
 
 * Add generated users to whitelist of the jupyterhub config
+  * Create jupyterhub whitelist
+    ```
+    bash create_jupyterhub_whitelist.sh -course_name wus -input_list samples/exam_complete_list.csv -output_list samples/exam_jupyterhub_list_output.csv -skip_header 1
+    
+    ```
+  * Sample output
+    ```
+    'wus-ws19-student02s',
+    'wus-ws19-student12s',
+    'wus-ws19-student22s',
+    ```
+  * Copy the output to the whitelist of jupyterhub
 
 ![jupyterhub config whitelist](https://github.com/DigiKlausur/brsu_digital_exam_tools/blob/master/exam_user_utilities/figures/jupyterhub_config_sample.png)
 
