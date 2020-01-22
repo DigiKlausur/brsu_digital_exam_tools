@@ -74,6 +74,9 @@ This directory contains codes for generating bulk Linux users, jupyterhub login 
 ![test02s_user_id](https://github.com/DigiKlausur/brsu_digital_exam_tools/blob/master/exam_user_utilities/figures/exam_sheet_sample.png)
 
 * Removing bulk user
-  * Create a dellist containing usernames to delete
-  * run remove_bulk_users.bash with sudo
-    * sudo bash remove_bulk_users.bash
+  * Remove user account and their home directory from the server (**sudo** required)
+    ```
+    bash remove_bulk_users.sh -input_list samples/exam_complete_list.csv -output_list -skip_header 1
+    ```
+      
+  
