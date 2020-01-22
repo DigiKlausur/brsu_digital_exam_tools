@@ -40,8 +40,8 @@ This directory contains codes for generating bulk Linux users, jupyterhub login 
     ```
     import pandas as pd
     whitelist = {'user2m','admin2m'} #default whitelist
-    students_list = 'samples/exam_complete_list_output.csv'
-    user_pd = pd.read_csv(session_path)
+    students_list_path = 'samples/exam_complete_list_output.csv'
+    user_pd = pd.read_csv(students_list_path)
     for username in user_pd.Username:
         whitelist.add(username)
     c.Authenticator.whitelist = whitelist
