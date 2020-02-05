@@ -117,7 +117,7 @@ echo "Name,FB02UID,Username,Password,Matrikel,Raum,Platz,Date" > $OUTPUT_LIST
     while IFS=, read -r col1 col2 col3 col4 col5 col6 || [ -n "$col6" ]
     do
       STUDENT_NAME="$col1"
-      STUDENT_ID="$col2"
+      STUDENT_ID=$(echo "$col2" | xargs)     #xargs will remove whitespace
       MATRIKEL="$col3"
       RAUM="$col4"
       PLATZ="$col5"
