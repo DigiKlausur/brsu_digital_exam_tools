@@ -33,7 +33,7 @@ def generate_exam_sheet(data: pd.core.frame.DataFrame,
                         course_name: str=None,
                         semester: str =None,
                         col_width: float=9.5,
-                        row_height: float=6.925,
+                        row_height: float=7.225,
                         font_size: float=28,
                         header_color: str='#dddddd',
                         row_colors: Sequence[str]=['#f1f1f2', 'w'],
@@ -41,6 +41,7 @@ def generate_exam_sheet(data: pd.core.frame.DataFrame,
                         bbox: Sequence[float]=[0., 0., 0.9, 1.],
                         header_columns: int=0,
                         axes: Sequence=None,
+                        take_home_sheet: bool=False,
                         **kwargs) -> matplotlib.figure.Figure:
     '''Returns a matplotlib figure that displays an exam sheet.
     The sheet includes:
@@ -53,31 +54,56 @@ def generate_exam_sheet(data: pd.core.frame.DataFrame,
     '''
     if axes is None:
         size = (np.array(data.shape[::-1]) + np.array([0, 1])) * np.array([col_width, row_height])
-        fig, axes = plt.subplots(6,1, figsize=size)
-        for i in range(6):
+        fig, axes = plt.subplots(8,1, figsize=size)
+        for i in range(8):
             axes[i].axis('off')
-
-    script_path = os.path.dirname(os.path.abspath(__file__))
-
+    
+    
     # we add the university logo on top of the exam sheet
-    axes[0].imshow(imageio.imread(os.path.join(script_path, 'figures/hbrs_logo.png')))
+    axes[0].imshow(imageio.imread('./figures/hbrs_logo.png'))
 
     tables = dict()
-    tables['course'] = axes[1].table(cellText=[[semester]],
+    
+    tables['course'] = axes[2].table(cellText=[[semester]], 
                                      bbox=bbox, colLabels=[course_name],
                                      cellLoc='center', **kwargs)
-    tables['user_data'] = axes[2].table(cellText=data.values, bbox=bbox,
-                                        colLabels=data.columns,
-                                        cellLoc='center', **kwargs)
-    tables['exam_info'] = axes[3].table(cellText=info.values, bbox=bbox,
-                                        colLabels=info.columns,
-                                        cellLoc='center', **kwargs)
-    tables['hashcode'] = axes[4].table(cellText=[['']], bbox=bbox,
-                                       colLabels=[u'Hashcode'],
-                                       cellLoc='center', **kwargs)
-    tables['timestamp'] = axes[5].table(cellText=[['']], bbox=bbox,
-                                        colLabels=[u'Timestamp'],
-                                        cellLoc='center', **kwargs)
+    if take_home_sheet:
+        tables['sheet_info'] = axes[1].table(cellText=[['Zum Mitnehmen']], bbox=[0., 0., 0.125, 1.],
+                                         colLabels=[u'To take home'],
+                                         cellLoc='left', loc='left',**kwargs)
+        tables['user_data'] = axes[3].table(cellText=[['{}'.format(data.values[0][0])]], bbox=bbox,
+                                              colLabels=[u'{}'.format(data.columns[0])],
+                                              cellLoc='center', **kwargs)
+        tables['exam_info'] = axes[4].table(cellText=[['{}'.format(data.values[0][2])]], bbox=bbox,
+                                              colLabels=[u'{}'.format(data.columns[2])],
+                                              cellLoc='center', **kwargs)
+        tables['hashcode'] = axes[5].table(cellText=[['']], bbox=bbox,
+                                           colLabels=[u'Hashcode'],
+                                           cellLoc='center', **kwargs)
+        tables['timestamp'] = axes[6].table(cellText=[['']], bbox=bbox,
+                                            colLabels=[u'Timestamp'],
+                                            cellLoc='center', **kwargs)
+        
+    else:
+        tables['sheet_info'] = axes[1].table(cellText=[['Bitte geben Sie diesen Zettel bei der Aufsicht ab']], 
+                                             bbox=[0., 0., 0.4, 1.],
+                                             colLabels=[u'This sheet has to be returned to the exam supervisor'],
+                                             loc='left',**kwargs)
+        tables['user_data'] = axes[3].table(cellText=data.values, bbox=bbox,
+                                            colLabels=data.columns,
+                                            cellLoc='center', **kwargs)
+        tables['exam_info'] = axes[4].table(cellText=info.values, bbox=bbox,
+                                            colLabels=info.columns,
+                                            cellLoc='center', **kwargs)
+        tables['hashcode'] = axes[5].table(cellText=[['']], bbox=bbox,
+                                           colLabels=[u'Hashcode'],
+                                           cellLoc='center', **kwargs)
+        tables['timestamp'] = axes[6].table(cellText=[['']], bbox=bbox,
+                                            colLabels=[u'Timestamp'],
+                                            cellLoc='center', **kwargs)
+        tables['signature'] = axes[7].table(cellText=[['', '']], bbox=bbox,
+                                            colLabels=[u'Signature (Unterschrift)', u'Notes'],
+                                            cellLoc='center', **kwargs)
 
     for table_name in tables:
         tables[table_name].auto_set_font_size(False)
@@ -89,6 +115,7 @@ def generate_exam_sheet(data: pd.core.frame.DataFrame,
             if k[0] == 0 or k[1] < header_columns:
                 cell.set_text_props(weight='bold', color='black')
                 cell.set_facecolor(header_color)
+    
     return fig
 
 def generate_exam_sheets(course_name: str, semester: str,
@@ -142,6 +169,10 @@ def generate_exam_sheets(course_name: str, semester: str,
         pp.savefig(generate_exam_sheet(data_df, info_df,
                                        course_name=course_name,
                                        semester=semester))
+        pp.savefig(generate_exam_sheet(data_df, info_df,
+                                       course_name=course_name,
+                                       semester=semester,
+                                       take_home_sheet=True))
     pp.close()
 
 if __name__ == '__main__':
