@@ -24,7 +24,7 @@ This directory contains codes for generating bulk Linux users, jupyterhub login 
     * output_list: the generated list with the username and password for each student (e.g. exam_complete_list_output.csv).
   * Start creating bulk linux users
     ```
-    sudo bash create_bulk_users.sh -course_name wus -input_list samples/exam_complete_list.csv -output_list samples/exam_complete_list_output.csv -skip_header 1
+    sudo bash create_bulk_users.sh -course_name wus -input_list examples/exam_complete_list.csv -output_list examples/exam_complete_list_output.csv -skip_header 1
     ```
   * Example of the generated list
 
@@ -40,7 +40,7 @@ This directory contains codes for generating bulk Linux users, jupyterhub login 
     ```
     import pandas as pd
     whitelist = {'user2m','admin2m'} #default whitelist
-    students_list_path = 'samples/exam_complete_list_output.csv'
+    students_list_path = 'examples/exam_complete_list_output.csv'
     user_pd = pd.read_csv(students_list_path)
     for username in user_pd.Username:
         whitelist.add(username)
@@ -52,7 +52,7 @@ This directory contains codes for generating bulk Linux users, jupyterhub login 
     * server: the jupyterhub server e.g. http://localhost:7777
     * user_list: the list of users generated from automatic user creation
   ```
-  python check_login --server=http://localhost:7777 --user_list=samples/exam_complete_list_output.csv
+  python check_login --server=http://localhost:7777 --user_list=examples/exam_complete_list_output.csv
   ```
 * Exam sheet generation
   * Once we have the list of users with their password and verified the user login on the jupyterhub server, we can generate a pdf file containing their login access. This will be the id of the student and will be handed to students by the Prüfung Aufsicht or invigilator.
@@ -62,7 +62,7 @@ This directory contains codes for generating bulk Linux users, jupyterhub login 
     * pdf_file: the path to the generated pdf file
     * course name: the name of the course
   ```
-  python3 generate_student_exam_sheets.py -i exam_user_utilities/samples/exam_complete_list_output.csv -o exam_user_utilities/samples/exam_complete_list_output.csv -c 'My awesome course' -s 'Sommersemester 2019'
+  python3 generate_student_exam_sheets.py -i exam_user_utilities/examples/exam_complete_list_output.csv -o exam_user_utilities/examples/exam_complete_list_output.csv -c 'My awesome course' -s 'Sommersemester 2019'
   ```
   * The sample of the generated exam sheet
 
@@ -71,7 +71,7 @@ This directory contains codes for generating bulk Linux users, jupyterhub login 
 * Removing bulk user
   * Remove user account and their home directory from the server (**sudo** required)
     ```
-    bash remove_bulk_users.sh -input_list samples/exam_complete_list.csv -output_list -skip_header 1
+    bash remove_bulk_users.sh -input_list examples/exam_complete_list.csv -output_list -skip_header 1
     ```
       
   
