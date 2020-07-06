@@ -81,7 +81,7 @@ def generate_exam_sheet(data: pd.core.frame.DataFrame,
                                            colLabels=[u'Hashcode'],
                                            cellLoc='center', **kwargs)
         tables['timestamp'] = axes[6].table(cellText=[['']], bbox=bbox,
-                                            colLabels=[u'Timestamp'],
+                                            colLabels=[u'Timestamp (HH:MM:SS)'],
                                             cellLoc='center', **kwargs)
         
     else:
@@ -95,11 +95,13 @@ def generate_exam_sheet(data: pd.core.frame.DataFrame,
         tables['exam_info'] = axes[4].table(cellText=info.values, bbox=bbox,
                                             colLabels=info.columns,
                                             cellLoc='center', **kwargs)
-        tables['hashcode'] = axes[5].table(cellText=[['']], bbox=bbox,
-                                           colLabels=[u'Hashcode'],
-                                           cellLoc='center', **kwargs)
-        tables['timestamp'] = axes[6].table(cellText=[['']], bbox=bbox,
-                                            colLabels=[u'Timestamp'],
+        tables['hashcode'] = axes[5].table(cellText=[['', '']], bbox=bbox,
+                                            colLabels=[u'Hashcode', 
+                                                       u'Timestamp (HH:MM:SS)'],
+                                            cellLoc='center', **kwargs)
+        tables['hardware_info'] = axes[6].table(cellText=[['', '']], bbox=bbox,
+                                            colLabels=[u'Laptop number (laptop pool)', 
+                                                       u'USB stick number (laptop pool)'],
                                             cellLoc='center', **kwargs)
         tables['signature'] = axes[7].table(cellText=[['', '']], bbox=bbox,
                                             colLabels=[u'Signature (Unterschrift)', u'Notes'],
