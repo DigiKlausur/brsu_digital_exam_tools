@@ -64,9 +64,10 @@ This directory contains codes for generating bulk Linux users, jupyterhub login 
   ```
   python3 generate_student_exam_sheets.py -i exam_user_utilities/examples/exam_complete_list_output.csv -o exam_user_utilities/examples/exam_complete_list_output.csv -c 'My awesome course' -s 'Sommersemester 2019'
   ```
-  * The sample of the generated exam sheet
+  * The sample of the generated exam sheet to be returned to exam supervisor and student respectively.
 
-![test02s_user_id](https://github.com/DigiKlausur/brsu_digital_exam_tools/blob/master/exam_user_utilities/figures/exam_sheet_sample.png)
+![exam_sheet_for_exam_supervisor](https://github.com/DigiKlausur/brsu_digital_exam_tools/blob/master/exam_user_utilities/figures/exam_sheet_for_exam_supervisor.png)
+![exam_sheet_for_student](https://github.com/DigiKlausur/brsu_digital_exam_tools/blob/master/exam_user_utilities/figures/exam_sheet_for_student.png)
 
 * Removing bulk user
   * Remove user account and their home directory from the server (**sudo** required)
