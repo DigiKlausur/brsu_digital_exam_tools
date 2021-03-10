@@ -27,6 +27,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 import argparse
+from pdf2image import convert_from_path
 
 def generate_exam_sheet(data: pd.core.frame.DataFrame,
                         info:pd.core.frame.DataFrame,
@@ -99,9 +100,8 @@ def generate_exam_sheet(data: pd.core.frame.DataFrame,
                                             colLabels=[u'Hashcode', 
                                                        u'Timestamp (HH:MM:SS)'],
                                             cellLoc='center', **kwargs)
-        tables['hardware_info'] = axes[6].table(cellText=[['', '']], bbox=bbox,
-                                            colLabels=[u'Laptop number (laptop pool)', 
-                                                       u'USB stick number (laptop pool)'],
+        tables['hardware_info'] = axes[6].table(cellText=[['']], bbox=bbox,
+                                            colLabels=[u'USB stick number (laptop pool)'],
                                             cellLoc='center', **kwargs)
         tables['signature'] = axes[7].table(cellText=[['', '']], bbox=bbox,
                                             colLabels=[u'Signature (Unterschrift)', u'Notes'],
@@ -120,9 +120,33 @@ def generate_exam_sheet(data: pd.core.frame.DataFrame,
     
     return fig
 
-def generate_exam_sheets(course_name: str, semester: str,
+def pdf_to_figure(pdf_file):
+    '''Returns a matplotlib figure that displays an exam sheet.
+    '''
+    
+    pages = convert_from_path(pdf_file, 300)
+    # A4 size in inch
+    fig = plt.figure(figsize=(8.268, 11.693), dpi=300)
+    ax = fig.add_subplot(1, 1, 1)
+    ax.axis('off')
+    ax.imshow(pages[0])
+    fig.tight_layout()
+    return fig
+
+def create_empty_figure():
+    '''Returns a matplotlib figure that displays an exam sheet.
+    '''
+    fig = plt.figure(figsize=(8.268, 11.693), dpi=150)
+    ax = fig.add_subplot(1, 1, 1)
+    ax.axis('off')
+    fig.tight_layout()
+    return fig
+
+def generate_exam_sheets(course_name: str, 
+                         semester: str,
                          csv_student_list_file: str,
-                         exam_sheet_file: str) -> None:
+                         exam_sheet_file: str,
+                         front_exam_sheet: str) -> None:
     '''Generates a PDF file (saved as exam_sheet_file)
     with exam sheets for each student.
 
@@ -140,9 +164,10 @@ def generate_exam_sheets(course_name: str, semester: str,
                                   student data
     exam_sheet_file: str -- name of the output PDF file
                             with the exam sheets
+    front_exam_sheet: str --  the path to the front exam sheet            
 
     '''
-    student_list = pd.read_csv(csv_student_list_file)
+    student_list = pd.read_csv(csv_student_list_file, encoding='UTF-8')
     pp = PdfPages(exam_sheet_file)
     for i in range(len(student_list)):
         print('Generating exam sheet {0}/{1}'.format(i+1, len(student_list)))
@@ -167,20 +192,30 @@ def generate_exam_sheets(course_name: str, semester: str,
         room_str = '{0} ({1})'.format(raum, str(session)) if session else raum
         info_df = pd.DataFrame([[matrikelnummer, room_str, platz,date]],
                                columns=['Matrikelnummer', 'Raum', 'Platz', 'Datum'])
-
+        
+        # hashcode sheet
         pp.savefig(generate_exam_sheet(data_df, info_df,
                                        course_name=course_name,
                                        semester=semester))
+        # fron exam sheet
+        if front_exam_sheet:
+            pp.savefig(pdf_to_figure(front_exam_sheet))
+        # take home sheet
         pp.savefig(generate_exam_sheet(data_df, info_df,
                                        course_name=course_name,
                                        semester=semester,
                                        take_home_sheet=True))
+        # empty sheet
+        if front_exam_sheet:
+            pp.savefig(create_empty_figure())
+        
     pp.close()
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-i', '--input_file', default='', help='Input CSV file with student data')
     parser.add_argument('-o', '--output_file', default='', help='Output PDF file with all exam sheets')
+    parser.add_argument('-fs', '--front_sheet', default='', help='Front exam sheet')
     parser.add_argument('-c', '--course', default='', help='Name of the course')
     parser.add_argument('-s', '--semester', default='', help='Semester of the exam')
 
@@ -189,6 +224,7 @@ if __name__ == '__main__':
     exam_sheet_file = args.output_file
     course_name = args.course
     semester = args.semester
+    front_exam_sheet = args.front_sheet
 
     if not csv_student_list_file:
         raise ValueError("No CSV input file specified")
@@ -201,9 +237,13 @@ if __name__ == '__main__':
 
     if not semester:
         raise ValueError('semester has to be set to a value')
+        
+    if not front_exam_sheet:
+        print("Official exam sheet is not given, only generating hashcode and takehome sheets")
 
     print('Generating exam sheets...')
     generate_exam_sheets(course_name, semester,
                          csv_student_list_file,
-                         exam_sheet_file)
+                         exam_sheet_file,
+                         front_exam_sheet)
     print('Exam sheets saved in {0}'.format(exam_sheet_file))
