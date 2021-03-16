@@ -41,8 +41,8 @@ def main(server, csv_student_list, user):
     login_url = os.path.join(server, 'hub', 'login?next=')
    
     if user is not None:
-        if user in student_list.Username.tolist():
-            idx = student_list.index[student_list['Username'] == user].tolist()
+        if user in student_list.Username.astype(str).values.tolist():
+            idx = student_list.index[student_list['Username'].astype(str) == user].tolist()
             username = student_list.Username[idx].tolist()[0]
             password = student_list.Password[idx].tolist()[0]
             password = str(password).strip()
