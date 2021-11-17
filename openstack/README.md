@@ -16,3 +16,11 @@
   
   Also, it will not remove any backup if the number of backups == max_backups.
   
+  
+  Note:
+  In the volume backup list file, `volume_to_backup_list.yaml`, it is required to:
+  * Name the backup volume should follow: <name_of_instance>-<disk_id> e.g. `e2x-nfs-server-01-disk-01`, where `e2x-nfs-server-01`
+    is the name of the instance, and `disk-01` is the disk id (mount name)
+  * Provide id of the volume. You can check it via `openstack volume list`
+  * Max number of backups
+  
