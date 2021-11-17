@@ -1,3 +1,11 @@
+"""
+@author: Mohammad Wasil
+@email: mwasil@outlook.co.id
+Copyright 2021, DigiKlausur project, Hochschule Bonn-Rhein-Sieg
+
+Perform OpenStack volume backup
+"""
+
 import os
 import sys
 import subprocess
