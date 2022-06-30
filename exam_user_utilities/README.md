@@ -9,12 +9,12 @@ This directory contains codes for generating bulk Linux users, jupyterhub login 
     * Date <br>
   Note: This list may contain a *single-line* header
 
-| Name        | FB02UID | Matrikelnummer | Room | Sitting place |  Exam date |
-|-------------|---------|----------------|------|---------------|------------|
-| Test User 0 | test02s |      012345    | C175 |       0       | 22.03.2019 |
-| Test User 1 | test12s |      123456    | C175 |       1       | 22.03.2019 |
-| Test User 2 | test22s |      234567    | C175 |       2       | 22.03.2019 |
-| Test User 3 | test32s |      345678    | C175 |       3       | 22.03.2019 |
+   | Name        | FB02UID | Matrikelnummer | Room |  Seat number  |  Exam date |
+   |-------------|---------|----------------|------|---------------|------------|
+   | Test User 0 | test02s |      012345    | C175 |       0       | 22.03.2019 |
+   | Test User 1 | test12s |      123456    | C175 |       1       | 22.03.2019 |
+   | Test User 2 | test22s |      234567    | C175 |       2       | 22.03.2019 |
+   | Test User 3 | test32s |      345678    | C175 |       3       | 22.03.2019 |
 
 * Linux user generation
   * Arguments required
