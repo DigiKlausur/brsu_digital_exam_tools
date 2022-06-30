@@ -1,0 +1,5 @@
+# list of volumes to backup
+volumes:
+  - name: openstack-backup
+    id: c8364f1b-51fa-48d9-ae5a-45c5ba5e9b3d
+    max_backups: 2
