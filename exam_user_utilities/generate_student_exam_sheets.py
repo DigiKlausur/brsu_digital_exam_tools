@@ -186,12 +186,16 @@ def generate_exam_sheets(course_name: str,
         if 'Session' in student_list.index:
             session = student_list.Session[i]
 
+        # check if name has middle name, and skip it
+        if len(name.split(" ")) > 2:
+            name = name.split(" ")[0] + " " + name.split(" ")[-1]
+
         data_df = pd.DataFrame([[name,fb02uid,username,password]],
                                columns=['Name', 'FB02UID', 'Username', 'Password'])
 
         room_str = '{0} ({1})'.format(raum, str(session)) if session else raum
         info_df = pd.DataFrame([[matrikelnummer, room_str, platz,date]],
-                               columns=['Matrikelnummer', 'Raum', 'Platz', 'Datum'])
+                               columns=['Matriculation number', 'Room', 'Seat number', 'Date'])
         
         # hashcode sheet
         pp.savefig(generate_exam_sheet(data_df, info_df,
