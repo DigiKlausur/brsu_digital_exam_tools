@@ -1,27 +1,28 @@
 import os
 import argparse
-import yaml
 import requests
 import pandas as pd
 import warnings
 import time
-import progressbar
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--server', default='', help='The jupyterhub server')
+parser.add_argument('--verify_request', default=False, help='Verify https request (default: False)')
 parser.add_argument('--user_list', default='', help='The list of the users in csv')
 parser.add_argument('--user', default=None, help='Specify particular user (must be listed in the user_list)')
+parser.add_argument('--range', type=int, nargs='+', default=None, help='A list containing min and max: e.g. [0,100]')
 
 FLAGS = parser.parse_args()
 SERVER = FLAGS.server
 USER_LIST = FLAGS.user_list
 USER = FLAGS.user
+RANGE = FLAGS.range
 
 def check_login(login_url, username, password, timeout=45):
     try:
         response = requests.post(login_url, 
                             data={'username': username, 'password': password}, 
-                            timeout=timeout, verify=True)
+                            timeout=timeout, verify=False)
     except requests.ReadTimeout:
         print("timeout after {} seconds when trying to log in user '{}' at URL '{}'".format(timeout, username, login_url))
         return False
@@ -35,11 +36,14 @@ def check_login(login_url, username, password, timeout=45):
     
     return True
 
-def main(server, csv_student_list, user):
+def main(server, csv_student_list, user, range_number):
     print('checking logins at server: ' + server)
     student_list = pd.read_csv(csv_student_list, encoding='UTF-8')
     login_url = os.path.join(server, 'hub', 'login?next=')
-   
+    start_time = time.time()
+    print("range number: ", range_number)
+    login_success = 0
+    login_fail = 0
     if user is not None:
         if user in student_list.Username.astype(str).values.tolist():
             idx = student_list.index[student_list['Username'].astype(str) == user].tolist()
@@ -53,40 +57,56 @@ def main(server, csv_student_list, user):
                 print("login failed: '{}'".format(username))
         else:
             print("{} is not in the list".format(user))
-    else:
-        bar = progressbar.ProgressBar(maxval=len(student_list), widgets=[progressbar.Bar('', ' ', ' '), '', progressbar.Percentage()])
-        bar.start()
-        for i in range(len(student_list)):
-            bar.update(i+1)
+    elif range_number is not None:
+        for i in range(range_number[0], range_number[1]):
             name = student_list.Name[i]
             fb02uid = student_list.FB02UID[i]
             username = student_list.Username[i]
             password = str(student_list.Password[i]).strip()
-            
+
+            if "Url" in student_list.columns:
+                login_url = os.path.join(student_list.Url[i], 'hub', 'login?next=')
+
             if check_login(login_url, username, password):
-                print("{}/{} login successful: '{}'".format(i,len(student_list),username))
+                print("{}/{} login successful: '{}'".format(i+1,range_number[1],username))
+                login_success += 1
             else:
                 print("login failed: '{}'".format(username))
-            
-            time.sleep(3.0)
+                login_fail += 1
 
-            #put 20s delay each 10 logins
+            #put 15s delay each 10 logins
             if i > 0 and i % 10 == 0:
                 print("Login paused for 15s")
-                time.sleep(5)
+                time.sleep(15)
             
-            if i > 0 and i % 20 == 0:
-                print("Login paused for 30s")
-                time.sleep(30) 
+    else:
+        for i in range(len(student_list)):
+            name = student_list.Name[i]
+            fb02uid = student_list.FB02UID[i]
+            username = student_list.Username[i]
+            password = str(student_list.Password[i]).strip()
 
-            if i > 0 and i % 60 == 0:
-                print("Login paused for 60s")
-                time.sleep(60) 
+            if "Url" in student_list.columns:
+                login_url = os.path.join(student_list.Url[i], 'hub', 'login?next=')
 
-        bar.finish()
+            if check_login(login_url, username, password):
+                print("{}/{} login successful: '{}'".format(i+1,len(student_list),username))
+                login_success += 1
+            else:
+                print("login failed: '{}'".format(username))
+                login_fail += 1
 
-    print ("Login check is done")
+            #put 15s delay each 10 logins
+            if i > 0 and i % 10 == 0:
+                print("Login paused for 15s")
+                time.sleep(15)
+
+    finish_time = time.time()
+    print("Login check is done")
+    print("Success: ", login_success)
+    print("Fail: ", login_fail)
+    print("Time: {} minutes".format(int((finish_time-start_time) / 60)))
 
 if __name__ == '__main__':
     warnings.filterwarnings("ignore")
-    main(SERVER, USER_LIST, USER)
+    main(SERVER, USER_LIST, USER, RANGE)
