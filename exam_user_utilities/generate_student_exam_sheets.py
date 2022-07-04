@@ -33,13 +33,12 @@ def generate_exam_sheet(data: pd.core.frame.DataFrame,
                         info:pd.core.frame.DataFrame,
                         course_name: str=None,
                         semester: str =None,
-                        col_width: float=9.5,
-                        row_height: float=7.225,
-                        font_size: float=28,
+                        sheet_size: Sequence[float]=[11.693, 8.268],
+                        font_size: float=11,
                         header_color: str='#dddddd',
                         row_colors: Sequence[str]=['#f1f1f2', 'w'],
                         edge_color: str='w',
-                        bbox: Sequence[float]=[0., 0., 0.9, 1.],
+                        bbox: Sequence[float]=[0., 0., 1.0, 0.75],
                         header_columns: int=0,
                         axes: Sequence=None,
                         take_home_sheet: bool=False,
@@ -54,24 +53,25 @@ def generate_exam_sheet(data: pd.core.frame.DataFrame,
         * an empty space for the exam submission time stamp
     '''
     if axes is None:
-        size = (np.array(data.shape[::-1]) + np.array([0, 1])) * np.array([col_width, row_height])
-        fig, axes = plt.subplots(8,1, figsize=size)
+        fig, axes = plt.subplots(8,1, figsize=sheet_size)
         for i in range(8):
             axes[i].axis('off')
-    
     
     # we add the university logo on top of the exam sheet
     axes[0].imshow(imageio.imread('./figures/hbrs_logo.png'))
 
     tables = dict()
-    
+
     tables['course'] = axes[2].table(cellText=[[semester]], 
                                      bbox=bbox, colLabels=[course_name],
                                      cellLoc='center', **kwargs)
     if take_home_sheet:
-        tables['sheet_info'] = axes[1].table(cellText=[['Zum Mitnehmen']], bbox=[0., 0., 0.125, 1.],
-                                         colLabels=[u'To take home'],
-                                         cellLoc='left', loc='left',**kwargs)
+        tables['sheet_info'] = axes[1].table(cellText=[['Zum Mitnehmen']],
+                                             bbox=[0., 0., 1.0, 0.75],
+                                             colLabels=[u'To take home'],
+                                             cellLoc='center',
+                                             loc='center',
+                                             **kwargs)
         tables['user_data'] = axes[3].table(cellText=[['{}'.format(data.values[0][0])]], bbox=bbox,
                                               colLabels=[u'{}'.format(data.columns[0])],
                                               cellLoc='center', **kwargs)
@@ -87,9 +87,9 @@ def generate_exam_sheet(data: pd.core.frame.DataFrame,
         
     else:
         tables['sheet_info'] = axes[1].table(cellText=[['Bitte geben Sie diesen Zettel bei der Aufsicht ab']], 
-                                             bbox=[0., 0., 0.4, 1.],
+                                             bbox=[0., 0., 1.0, 0.75],
                                              colLabels=[u'This sheet has to be returned to the exam supervisor'],
-                                             loc='left',**kwargs)
+                                             cellLoc='center',loc='center',**kwargs)
         tables['user_data'] = axes[3].table(cellText=data.values, bbox=bbox,
                                             colLabels=data.columns,
                                             cellLoc='center', **kwargs)
@@ -111,13 +111,23 @@ def generate_exam_sheet(data: pd.core.frame.DataFrame,
         tables[table_name].auto_set_font_size(False)
         tables[table_name].set_fontsize(font_size)
 
-    for table_name in tables:
-        for k, cell in six.iteritems(tables[table_name]._cells):
-            cell.set_edgecolor(edge_color)
-            if k[0] == 0 or k[1] < header_columns:
+    for i,table_name in enumerate(tables):
+        if table_name == 'sheet_info':
+            for k, cell in six.iteritems(tables[table_name]._cells):
+                cell.set_edgecolor(edge_color)
                 cell.set_text_props(weight='bold', color='black')
-                cell.set_facecolor(header_color)
-    
+        elif table_name == 'course':
+            for k, cell in six.iteritems(tables[table_name]._cells):
+                cell.set_edgecolor(edge_color)
+                if k[0] == 0 or k[1] < header_columns:
+                    cell.set_text_props(weight='bold', color='black')
+                    cell.set_facecolor("#009DE0")
+        else:
+            for k, cell in six.iteritems(tables[table_name]._cells):
+                cell.set_edgecolor(edge_color)
+                if k[0] == 0 or k[1] < header_columns:
+                    cell.set_text_props(weight='bold', color='black')
+                    cell.set_facecolor(header_color)
     return fig
 
 def pdf_to_figure(pdf_file):
@@ -136,7 +146,7 @@ def pdf_to_figure(pdf_file):
 def create_empty_figure():
     '''Returns a matplotlib figure that displays an exam sheet.
     '''
-    fig = plt.figure(figsize=(8.268, 11.693), dpi=150)
+    fig = plt.figure(figsize=(8.268, 11.693), dpi=300)
     ax = fig.add_subplot(1, 1, 1)
     ax.axis('off')
     fig.tight_layout()
