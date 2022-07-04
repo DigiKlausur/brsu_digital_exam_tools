@@ -208,6 +208,12 @@ def generate_exam_sheets(course_name: str,
         info_df = pd.DataFrame([[matrikelnummer, room_str, platz,date]],
                                columns=['Matriculation number', 'Room', 'Seat number', 'Date'])
         
+        # front exam sheet
+        if front_exam_sheet:
+            front_sheet = pdf_to_figure(front_exam_sheet)
+            pp.savefig(front_sheet, dpi=300)
+            matplotlib.pyplot.close(front_sheet)
+
         # to-be-returned hashcode sheet
         hashcode_sheet = generate_exam_sheet(data_df, info_df,
                                        course_name=course_name,
@@ -216,11 +222,7 @@ def generate_exam_sheets(course_name: str,
         pp.savefig(hashcode_sheet, dpi=300)
         # close figure to avoid OOM
         matplotlib.pyplot.close(hashcode_sheet)
-        # front exam sheet
-        if front_exam_sheet:
-            front_sheet = pdf_to_figure(front_exam_sheet)
-            pp.savefig(front_sheet, dpi=300)
-            matplotlib.pyplot.close(front_sheet)
+
         # take home sheet
         take_home_sheet = generate_exam_sheet(data_df, info_df,
                                        course_name=course_name,
@@ -228,6 +230,7 @@ def generate_exam_sheets(course_name: str,
                                        take_home_sheet=True)
         pp.savefig(take_home_sheet, dpi=300)
         matplotlib.pyplot.close(take_home_sheet)
+
         # empty sheet
         if front_exam_sheet:
             empty_sheet = create_empty_figure()
