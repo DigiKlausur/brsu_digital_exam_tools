@@ -53,12 +53,14 @@ def generate_exam_sheet(data: pd.core.frame.DataFrame,
         * an empty space for the exam submission time stamp
     '''
     if axes is None:
-        fig, axes = plt.subplots(8,1, figsize=sheet_size)
+        # fig, axes = plt.subplots(8,1, figsize=sheet_size, dpi=300)
+        fig = plt.figure(figsize=sheet_size, dpi=300)
+        axes = fig.subplots(8,1)
         for i in range(8):
             axes[i].axis('off')
     
     # we add the university logo on top of the exam sheet
-    axes[0].imshow(imageio.imread('./figures/hbrs_logo.png'))
+    axes[0].imshow(convert_from_path('./figures/h-brs_logo.pdf', dpi=300)[0])
 
     tables = dict()
 
@@ -118,10 +120,9 @@ def generate_exam_sheet(data: pd.core.frame.DataFrame,
                 cell.set_text_props(weight='bold', color='black')
         elif table_name == 'course':
             for k, cell in six.iteritems(tables[table_name]._cells):
-                cell.set_edgecolor(edge_color)
+                cell.set_edgecolor("black")
                 if k[0] == 0 or k[1] < header_columns:
                     cell.set_text_props(weight='bold', color='black')
-                    cell.set_facecolor("#009DE0")
         else:
             for k, cell in six.iteritems(tables[table_name]._cells):
                 cell.set_edgecolor(edge_color)
@@ -212,25 +213,25 @@ def generate_exam_sheets(course_name: str,
                                        course_name=course_name,
                                        semester=semester)
 
-        pp.savefig(hashcode_sheet)
+        pp.savefig(hashcode_sheet, dpi=300)
         # close figure to avoid OOM
         matplotlib.pyplot.close(hashcode_sheet)
         # front exam sheet
         if front_exam_sheet:
             front_sheet = pdf_to_figure(front_exam_sheet)
-            pp.savefig(front_sheet)
+            pp.savefig(front_sheet, dpi=300)
             matplotlib.pyplot.close(front_sheet)
         # take home sheet
         take_home_sheet = generate_exam_sheet(data_df, info_df,
                                        course_name=course_name,
                                        semester=semester,
                                        take_home_sheet=True)
-        pp.savefig(take_home_sheet)
+        pp.savefig(take_home_sheet, dpi=300)
         matplotlib.pyplot.close(take_home_sheet)
         # empty sheet
         if front_exam_sheet:
             empty_sheet = create_empty_figure()
-            pp.savefig(empty_sheet)
+            pp.savefig(empty_sheet, dpi=300)
             matplotlib.pyplot.close(empty_sheet)
         
     pp.close()
