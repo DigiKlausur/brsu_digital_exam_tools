@@ -27,6 +27,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 import argparse
+from tqdm import tqdm
 from pdf2image import convert_from_path
 
 def generate_exam_sheet(data: pd.core.frame.DataFrame,
@@ -180,9 +181,7 @@ def generate_exam_sheets(course_name: str,
     '''
     student_list = pd.read_csv(csv_student_list_file, encoding='UTF-8')
     pp = PdfPages(exam_sheet_file)
-    for i in range(len(student_list)):
-        print('Generating exam sheet {0}/{1}'.format(i+1, len(student_list)))
-
+    for i in tqdm(range(len(student_list))):
         name = student_list.Name[i]
         fb02uid = student_list.FB02UID[i]
         username = student_list.Username[i]
