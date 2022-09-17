@@ -4,6 +4,7 @@ import requests
 import pandas as pd
 import warnings
 import time
+from tqdm import tqdm
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--server', default='', help='The jupyterhub server')
@@ -42,8 +43,13 @@ def main(server, csv_student_list, user, range_number):
     login_url = os.path.join(server, 'hub', 'login?next=')
     start_time = time.time()
     print("range number: ", range_number)
-    login_success = 0
-    login_fail = 0
+
+    # update student list, check whether range is given
+    if range_number is not None:
+        student_list = student_list[range_number[0],
+                                    range_number[1]]
+    success_login = []
+    fail_login = []
     if user is not None:
         if user in student_list.Username.astype(str).values.tolist():
             idx = student_list.index[student_list['Username'].astype(str) == user].tolist()
@@ -52,36 +58,13 @@ def main(server, csv_student_list, user, range_number):
             password = str(password).strip()
             print(username, password)
             if check_login(login_url, username, password):
-                print("login successful: '{}'".format(username))
+                success_login.append(username)
             else:
-                print("login failed: '{}'".format(username))
+                fail_login.append(username)
         else:
             print("{} is not in the list".format(user))
-    elif range_number is not None:
-        for i in range(range_number[0], range_number[1]):
-            name = student_list.Name[i]
-            fb02uid = student_list.FB02UID[i]
-            username = student_list.Username[i]
-            password = str(student_list.Password[i]).strip()
-
-            if "Url" in student_list.columns:
-                login_url = os.path.join(student_list.Url[i], 'hub', 'login?next=')
-
-            if check_login(login_url, username, password):
-                print("{}/{} login successful: '{}'".format(i+1,range_number[1],username))
-                login_success += 1
-            else:
-                print("login failed: '{}'".format(username))
-                login_fail += 1
-
-            #put 15s delay each 10 logins
-            if i > 0 and i % 10 == 0:
-                print("Login paused for 15s")
-                time.sleep(15)
-            
     else:
-        for i in range(len(student_list)):
-            name = student_list.Name[i]
+        for i in tqdm(range(len(student_list))):
             fb02uid = student_list.FB02UID[i]
             username = student_list.Username[i]
             password = str(student_list.Password[i]).strip()
@@ -90,21 +73,21 @@ def main(server, csv_student_list, user, range_number):
                 login_url = os.path.join(student_list.Url[i], 'hub', 'login?next=')
 
             if check_login(login_url, username, password):
-                print("{}/{} login successful: '{}'".format(i+1,len(student_list),username))
-                login_success += 1
+                # print("{}/{} login successful: '{}'".format(i+1,range_number[1],username))
+                success_login.append(username)
             else:
-                print("login failed: '{}'".format(username))
-                login_fail += 1
+                # print("login failed: '{}'".format(username))
+                fail_login.append(username)
 
             #put 15s delay each 10 logins
             if i > 0 and i % 10 == 0:
-                print("Login paused for 15s")
+                # print("Login paused for 15s")
                 time.sleep(15)
 
     finish_time = time.time()
     print("Login check is done")
-    print("Success: ", login_success)
-    print("Fail: ", login_fail)
+    print("Success: ", len(success_login), success_login)
+    print("Fail: ", len(fail_login), fail_login)
     print("Time: {} minutes".format(int((finish_time-start_time) / 60)))
 
 if __name__ == '__main__':
