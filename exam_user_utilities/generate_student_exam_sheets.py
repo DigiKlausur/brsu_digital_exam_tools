@@ -125,13 +125,13 @@ def generate_exam_sheet(data: pd.core.frame.DataFrame,
             for k, cell in six.iteritems(tables[table_name]._cells):
                 cell.set_edgecolor(edge_color)
                 cell.set_text_props(weight='bold', color='black')
-        elif table_name == 'user_data':
+        elif table_name == 'user_data' and not take_home_sheet:
             for k, cell in six.iteritems(tables[table_name]._cells):
                 cell.set_edgecolor(edge_color)
                 if k[0] == 0 or k[1] < header_columns:
                     cell.set_text_props(weight='bold', color='black')
                     cell.set_facecolor(header_color)
-        elif table_name == 'hashcode':
+        elif table_name == 'hashcode' or (table_name == "timestamp" and take_home_sheet):
             for k, cell in six.iteritems(tables[table_name]._cells):
                 cell.set_edgecolor("black")
                 if k[0] == 0 or k[1] < header_columns:
