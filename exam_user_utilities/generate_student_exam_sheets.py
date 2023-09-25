@@ -31,9 +31,9 @@ from tqdm import tqdm
 from pdf2image import convert_from_path
 
 def generate_exam_sheet(data: pd.core.frame.DataFrame,
-                        info:pd.core.frame.DataFrame,
+                        info: pd.core.frame.DataFrame,
                         course_name: str=None,
-                        semester: str =None,
+                        semester: str=None,
                         sheet_size: Sequence[float]=[11.693, 8.268],
                         font_size: float=11,
                         header_color: str='#dddddd',
@@ -43,6 +43,7 @@ def generate_exam_sheet(data: pd.core.frame.DataFrame,
                         header_columns: int=0,
                         axes: Sequence=None,
                         take_home_sheet: bool=False,
+                        notes: str=None,
                         **kwargs) -> matplotlib.figure.Figure:
     '''Returns a matplotlib figure that displays an exam sheet.
     The sheet includes:
@@ -93,20 +94,25 @@ def generate_exam_sheet(data: pd.core.frame.DataFrame,
                                              bbox=[0., 0., 1.0, 0.75],
                                              colLabels=[u'This sheet has to be returned to the exam supervisor'],
                                              cellLoc='center',loc='center',**kwargs)
+        # name, fb02uid, username, password
         tables['user_data'] = axes[3].table(cellText=data.values, bbox=bbox,
                                             colLabels=data.columns,
                                             cellLoc='center', **kwargs)
+        # matriculation number, room, seat number, data
         tables['exam_info'] = axes[4].table(cellText=info.values, bbox=bbox,
                                             colLabels=info.columns,
                                             cellLoc='center', **kwargs)
+        # hashcode, timestamp
         tables['hashcode'] = axes[5].table(cellText=[['', '']], bbox=bbox,
                                             colLabels=[u'Hashcode', 
                                                        u'Timestamp (HH:MM:SS)'],
                                             cellLoc='center', **kwargs)
-        tables['hardware_info'] = axes[6].table(cellText=[['']], bbox=bbox,
-                                            colLabels=[u'USB stick number (laptop pool)'],
-                                            cellLoc='center', **kwargs)
-        tables['signature'] = axes[7].table(cellText=[['', '']], bbox=bbox,
+        # usb stick number info for exams conducted in laptop pool
+        #tables['hardware_info'] = axes[6].table(cellText=[['']], bbox=bbox,
+        #                                    colLabels=[u'USB stick number (laptop pool)'],
+        #                                    cellLoc='center', **kwargs)
+        # signature, notes
+        tables['signature'] = axes[6].table(cellText=[['', u'{}'.format(notes)]], bbox=bbox,
                                             colLabels=[u'Signature (Unterschrift)', u'Notes'],
                                             cellLoc='center', **kwargs)
 
@@ -119,7 +125,13 @@ def generate_exam_sheet(data: pd.core.frame.DataFrame,
             for k, cell in six.iteritems(tables[table_name]._cells):
                 cell.set_edgecolor(edge_color)
                 cell.set_text_props(weight='bold', color='black')
-        elif table_name == 'course':
+        elif table_name == 'user_data':
+            for k, cell in six.iteritems(tables[table_name]._cells):
+                cell.set_edgecolor(edge_color)
+                if k[0] == 0 or k[1] < header_columns:
+                    cell.set_text_props(weight='bold', color='black')
+                    cell.set_facecolor(header_color)
+        elif table_name == 'hashcode':
             for k, cell in six.iteritems(tables[table_name]._cells):
                 cell.set_edgecolor("black")
                 if k[0] == 0 or k[1] < header_columns:
@@ -128,7 +140,7 @@ def generate_exam_sheet(data: pd.core.frame.DataFrame,
             for k, cell in six.iteritems(tables[table_name]._cells):
                 cell.set_edgecolor(edge_color)
                 if k[0] == 0 or k[1] < header_columns:
-                    cell.set_text_props(weight='bold', color='black')
+                    cell.set_text_props(weight='normal', color='black')
                     cell.set_facecolor(header_color)
     return fig
 
@@ -179,7 +191,7 @@ def generate_exam_sheets(course_name: str,
     front_exam_sheet: str --  the path to the front exam sheet            
 
     '''
-    student_list = pd.read_csv(csv_student_list_file, encoding='UTF-8')
+    student_list = pd.read_csv(csv_student_list_file, encoding='UTF-8').fillna("")
     pp = PdfPages(exam_sheet_file)
     for i in tqdm(range(len(student_list))):
         name = student_list.Name[i]
@@ -193,10 +205,14 @@ def generate_exam_sheets(course_name: str,
         date = student_list.Date[i]
 
         session = None
-        if 'Session' in student_list.index:
+        if 'Session' in student_list.columns:
             session = student_list.Session[i]
 
-        # check if name has middle name, and skip it
+        notes = ""
+        if 'Notes' in student_list.columns:
+            notes = student_list.Notes[i]
+
+        # check if name has middle name, and remove it to make it fit in the box
         if len(name.split(" ")) > 2:
             name = name.split(" ")[0] + " " + name.split(" ")[-1]
 
@@ -204,9 +220,9 @@ def generate_exam_sheets(course_name: str,
                                columns=['Name', 'FB02UID', 'Username', 'Password'])
 
         room_str = '{0} ({1})'.format(raum, str(session)) if session else raum
-        info_df = pd.DataFrame([[matrikelnummer, room_str, platz,date]],
+        info_df = pd.DataFrame([[matrikelnummer, room_str, platz, date]],
                                columns=['Matriculation number', 'Room', 'Seat number', 'Date'])
-        
+
         # front exam sheet
         if front_exam_sheet:
             front_sheet = pdf_to_figure(front_exam_sheet)
@@ -214,9 +230,11 @@ def generate_exam_sheets(course_name: str,
             matplotlib.pyplot.close(front_sheet)
 
         # to-be-returned hashcode sheet
-        hashcode_sheet = generate_exam_sheet(data_df, info_df,
-                                       course_name=course_name,
-                                       semester=semester)
+        hashcode_sheet = generate_exam_sheet(data_df, 
+                                             info_df,
+                                             course_name=course_name,
+                                             semester=semester,
+                                             notes=notes)
 
         pp.savefig(hashcode_sheet, dpi=300)
         # close figure to avoid OOM
